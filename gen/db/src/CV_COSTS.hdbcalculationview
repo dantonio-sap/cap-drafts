@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_COSTS" applyPrivilegeType="NONE" dataCategory="DIMENSION" schemaVersion="3.0" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<descriptions defaultDescription="CV_COSTS"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="MY_BOOKSHOP_BOOKS">
+    <resourceUri>MY_BOOKSHOP_BOOKS</resourceUri>
+  </DataSource>
+  <DataSource id="MY_BOOKSHOP_BOOKCOSTS">
+    <resourceUri>MY_BOOKSHOP_BOOKCOSTS</resourceUri>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1" cardinality="C1_1" joinType="leftOuter">
+    <viewAttributes>
+      <viewAttribute id="ID"/>
+      <viewAttribute id="TITLE"/>
+      <viewAttribute id="STOCK"/>
+      <viewAttribute id="PURCHASEPRICE"/>
+      <viewAttribute id="SALESPRICE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="MY_BOOKSHOP_BOOKS">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ID" source="ID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TITLE" source="TITLE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STOCK" source="STOCK"/>
+    </input>
+    <input node="MY_BOOKSHOP_BOOKCOSTS">
+      <mapping xsi:type="Calculation:AttributeMapping" target="PURCHASEPRICE" source="PURCHASEPRICE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SALESPRICE" source="SALESPRICE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ID" source="BOOK_ID"/>
+    </input>
+    <joinAttribute name="ID"/>
+  </calculationView>
+</calculationViews>
+
+<logicalModel id="Join_1">
+  <attributes>
+    <attribute id="ID" order="1">
+      <descriptions defaultDescription="ID"/>
+      <keyMapping columnObjectName="Join_1" columnName="ID"/>
+    </attribute>
+    <attribute id="TITLE" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TITLE"/>
+      <keyMapping columnObjectName="Join_1" columnName="TITLE"/>
+    </attribute>
+    <attribute id="STOCK" order="3">
+      <descriptions defaultDescription="STOCK"/>
+      <keyMapping columnObjectName="Join_1" columnName="STOCK"/>
+    </attribute>
+    <attribute id="PURCHASEPRICE" order="4">
+      <descriptions defaultDescription="PURCHASEPRICE"/>
+      <keyMapping columnObjectName="Join_1" columnName="PURCHASEPRICE"/>
+    </attribute>
+    <attribute id="SALESPRICE" order="5">
+      <descriptions defaultDescription="SALESPRICE"/>
+      <keyMapping columnObjectName="Join_1" columnName="SALESPRICE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes>
+    <calculatedAttribute id="TOTAL_SALES_VALUE" order="6" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="INTEGER" expressionLanguage="SQL">
+        <formula>&quot;STOCK&quot; * &quot;SALESPRICE&quot;</formula>
+      </keyCalculation>
+      </calculatedAttribute>
+  </calculatedAttributes>
+  <baseMeasures/>
+  <calculatedMeasures/>
+  <restrictedMeasures/></logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="100" y="105"/>
+    
+      <rectangleSize width="160"/>
+    </shape>
+    
+  
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="100" y="212"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="MY_BOOKSHOP_BOOKS" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape modelObjectName="MY_BOOKSHOP_BOOKCOSTS" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

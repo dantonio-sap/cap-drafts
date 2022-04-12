@@ -7,15 +7,19 @@
     "private": true,
     "dependencies": {
         "@sap/cds": "^5",
+        "@sap/xssec": "^3.2.13",
         "express": "^4",
         "hdb": "^0.18.3",
         "passport": "^0.5.2"
     },
     "devDependencies": {
+        "@sap/ux-specification": "^1.96.9",
         "sqlite3": "^5.0.2"
     },
     "scripts": {
-        "start": "cds run"
+        "start": "cds run",
+        "watch-cap.drafts.ui": "cds watch --open cap.drafts.ui/webapp/index.html?sap-ui-xx-viewCache=false#fe-lrop-v4",
+        "undeploy": "cf undeploy cap-drafts --delete-services --delete-service-keys"
     },
     "eslintConfig": {
         "extends": "eslint:recommended",
@@ -46,13 +50,13 @@
         "requires": {
             "db": {
                 "kind": "sql"
-            },
-            "auth": {
-                "kind": "dummy-auth"
             }
         },
         "hana": {
             "deploy-format": "hdbtable"
         }
-    }
+    },
+    "sapux": [
+        "app/cap.drafts.ui"
+    ]
 }

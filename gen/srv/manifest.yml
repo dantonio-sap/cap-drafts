@@ -1,0 +1,9 @@
+---
+applications:
+  - name: cap-drafts-srv
+    path: .
+    memory: 256M
+    buildpacks:
+      - nodejs_buildpack
+    services:
+      - cap-drafts-db

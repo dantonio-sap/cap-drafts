@@ -1,60 +1,135 @@
-## Generated mta.yaml based on template version 0.4.0
-## appName = cap-drafts
-## language=nodejs; multitenant=false
-## approuter=
-_schema-version: '3.1'
+_schema-version: "3.1"
 ID: cap-drafts
+description: A simple CAP project.
 version: 1.0.0
-description: "A simple CAP project."
+modules:
+- name: cap-drafts-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: cap-drafts-db
+  - name: uaa_cap-drafts
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+- name: cap-drafts-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: cap-drafts-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: cap-drafts-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: cap-drafts-destination-service
+    parameters:
+      content-target: true
+  - name: cap-drafts_html_repo_host
+    parameters:
+      service-key:
+        name: cap-drafts_html_repo_host-key
+  - name: uaa_cap-drafts
+    parameters:
+      service-key:
+        name: uaa_cap-drafts-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: cap_drafts_cap_drafts_html_repo_host
+          ServiceInstanceName: cap-drafts-html5-app-host-service
+          ServiceKeyName: cap-drafts_html_repo_host-key
+          sap.cloud.service: cap.drafts
+        - Authentication: OAuth2UserTokenExchange
+          Name: cap_drafts_uaa_cap_drafts
+          ServiceInstanceName: cap-drafts-xsuaa-service
+          ServiceKeyName: uaa_cap-drafts-key
+          sap.cloud.service: cap.drafts
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: cap-drafts-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: cap-drafts_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - capdraftsui.zip
+      name: capdraftsui
+      target-path: resources/
+- name: capdraftsui
+  type: html5
+  path: app/cap.drafts.ui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: cap-drafts-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+  properties:
+    hdi-service-name: ${service-name}
+- name: cap-drafts-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          - Authentication: NoAuthentication
+            Name: cap-drafts-api
+            ProxyType: Internet
+            Type: HTTP
+            URL: ~{srv-api/srv-url}
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: cap-drafts-destination-service
+    service-plan: lite
+  requires:
+    - name: srv-api
+- name: cap-drafts_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: cap-drafts-html5-app-host-service
+    service-plan: app-host
+- name: uaa_cap-drafts
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: cap-drafts-xsuaa-service
+    service-plan: application
 parameters:
+  deploy_mode: html5-repo
   enable-parallel-deployments: true
-   
 build-parameters:
   before-all:
-   - builder: custom
-     commands:
-      - npm install --production
-      - npx -p @sap/cds-dk cds build --production
-
-modules:
- # --------------------- SERVER MODULE ------------------------
- - name: cap-drafts-srv
- # ------------------------------------------------------------
-   type: nodejs
-   path: gen/srv
-   parameters:
-     buildpack: nodejs_buildpack
-   requires:
-    # Resources extracted from CAP configuration
-    - name: cap-drafts-db
-   provides:
-    - name: srv-api      # required by consumers of CAP services (e.g. approuter)
-      properties:
-        srv-url: ${default-url}
-
- # -------------------- SIDECAR MODULE ------------------------
- - name: cap-drafts-db-deployer
- # ------------------------------------------------------------
-   type: hdb
-   path: gen/db  
-   parameters:
-     buildpack: nodejs_buildpack
-   requires:
-    # 'hana' and 'xsuaa' resources extracted from CAP configuration
-    - name: cap-drafts-db
-
-
-resources:
- # services extracted from CAP configuration
- # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
-# ------------------------------------------------------------
- - name: cap-drafts-db
-# ------------------------------------------------------------
-   type: com.sap.xs.hdi-container
-   parameters:
-     service: hana  # or 'hanatrial' on trial landscapes
-     service-plan: hdi-shared
-   properties:
-     hdi-service-name: ${service-name}
-
-
+  - builder: custom
+    commands:
+    - npm install --production
+    - npx -p @sap/cds-dk cds build --production
