@@ -1,29 +1,4 @@
-# CAP cap-drafts
-_out
-*.db
-connection.properties
-default-*.json
-gen/
-node_modules/
-target/
 
-# Web IDE, App Studio
-.che/
-.gen/
-
-# MTA
-*_mta_build_tmp
-*.mtar
-mta_archives/
-
-# Other
-.DS_Store
-*.orig
-*.log
-
-*.iml
-*.flattened-pom.xml
-
-# IDEs
-# .vscode
-# .idea
+# auto generated wildcard
+gen/db/.env
+node_modules
