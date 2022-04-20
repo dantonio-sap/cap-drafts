@@ -13,13 +13,16 @@
     "passport": "^0.5.2"
   },
   "devDependencies": {
+    "cds-swagger-ui-express": "^0.4.0",
     "@sap/ux-specification": "^1.96.9",
     "sqlite3": "^5.0.2"
   },
   "scripts": {
     "start": "cds run",
     "watch-cap.drafts.ui": "cds watch --open cap.drafts.ui/webapp/index.html?sap-ui-xx-viewCache=false#fe-lrop-v4",
-    "undeploy": "cf undeploy cap-drafts --delete-services --delete-service-keys"
+    "undeploy": "cf undeploy cap-drafts --delete-services --delete-service-keys",
+    "create-swagger-json": "cds compile srv --service all -o docs --to openapi",
+    "build": "mbt build"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
@@ -49,11 +52,12 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "sql"
+        "kind": "sql",
+        "model": "*"
+      },
+      "auth": {
+        "kind": "dummy"
       }
-    },
-    "hana": {
-      "deploy-format": "hdbtable"
     }
   },
   "sapux": [

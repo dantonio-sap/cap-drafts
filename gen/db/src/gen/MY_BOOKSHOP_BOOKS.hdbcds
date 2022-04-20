@@ -1,0 +1,9 @@
+entity MY_BOOKSHOP_BOOKS {
+  CREATEDAT : UTCTimestamp;
+  CREATEDBY : String(255);
+  MODIFIEDAT : UTCTimestamp;
+  MODIFIEDBY : String(255);
+  key ID : Integer;
+  TITLE : String(5000);
+  STOCK : Integer;
+};
