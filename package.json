@@ -8,20 +8,23 @@
   "dependencies": {
     "@sap/cds": "^5",
     "@sap/xssec": "^3.2.13",
+    "cds-swagger-ui-express": "^0.4.0",
     "express": "^4",
     "hdb": "^0.18.3",
     "passport": "^0.5.2"
   },
   "devDependencies": {
     "@sap/ux-specification": "^1.96.9",
-    "sqlite3": "^5.0.2"
+    "cross-var": "^1.1.0"
   },
   "scripts": {
     "start": "cds run",
     "watch-cap.drafts.ui": "cds watch --open cap.drafts.ui/webapp/index.html?sap-ui-xx-viewCache=false#fe-lrop-v4",
+    "deploy": "cross-var cf deploy mta_archives/$npm_package_name-$npm_package_version.mtar",
     "undeploy": "cf undeploy cap-drafts --delete-services --delete-service-keys",
-    "create-swagger-json": "cds compile srv --service all -o docs --to openapi",
-    "build": "mbt build"
+    "prebuild": "cds compile srv --service all -o docs --to openapi",
+    "build": "mbt build --mtar $npm_package_name-$npm_package_version.mtar",
+    "postbuild": "npm install --force"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
@@ -51,12 +54,14 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "sql",
-        "model": "*"
+        "kind": "hana"
       },
       "auth": {
         "kind": "dummy"
       }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
     }
   },
   "sapux": [

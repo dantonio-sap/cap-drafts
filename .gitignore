@@ -7,3 +7,4 @@ app/cap.drafts.ui/dist/
 resources/
 sqlite.db
 mta_archives/
+default-env.json
