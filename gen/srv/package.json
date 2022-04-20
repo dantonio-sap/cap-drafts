@@ -13,7 +13,6 @@
     "passport": "^0.5.2"
   },
   "devDependencies": {
-    "cds-swagger-ui-express": "^0.4.0",
     "@sap/ux-specification": "^1.96.9",
     "sqlite3": "^5.0.2"
   },
