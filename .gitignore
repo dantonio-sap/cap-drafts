@@ -2,7 +2,7 @@
 # auto generated wildcard
 gen/db/.env
 node_modules
-app/cap.drafts.ui/dist/**
-resources/**
+app/cap.drafts.ui/dist/
+resources/
 sqlite.db
-mta_archives/**
+mta_archives/
