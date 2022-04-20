@@ -2,3 +2,5 @@
 # auto generated wildcard
 gen/db/.env
 node_modules
+app/cap.drafts.ui/dist/
+resources/
