@@ -19,7 +19,9 @@
   "scripts": {
     "start": "cds run",
     "watch-cap.drafts.ui": "cds watch --open cap.drafts.ui/webapp/index.html?sap-ui-xx-viewCache=false#fe-lrop-v4",
-    "undeploy": "cf undeploy cap-drafts --delete-services --delete-service-keys"
+    "undeploy": "cf undeploy cap-drafts --delete-services --delete-service-keys",
+    "create-swagger-json": "cds compile srv --service all -o docs --to openapi",
+    "build": "mbt build"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
@@ -49,11 +51,12 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "sql"
+        "kind": "sql",
+        "model": "*"
+      },
+      "auth": {
+        "kind": "dummy"
       }
-    },
-    "hana": {
-      "deploy-format": "hdbtable"
     }
   },
   "sapux": [

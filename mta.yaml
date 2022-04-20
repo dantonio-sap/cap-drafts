@@ -15,6 +15,7 @@ modules:
       srv-url: ${default-url}
   parameters:
     buildpack: nodejs_buildpack
+
 - name: cap-drafts-db-deployer
   type: hdb
   path: gen/db
@@ -22,6 +23,7 @@ modules:
   - name: cap-drafts-db
   parameters:
     buildpack: nodejs_buildpack
+
 - name: cap-drafts-destination-content
   type: com.sap.application.content
   requires:
@@ -52,6 +54,7 @@ modules:
         existing_destinations_policy: ignore
   build-parameters:
     no-source: true
+
 - name: cap-drafts-app-content
   type: com.sap.application.content
   path: .
@@ -66,6 +69,7 @@ modules:
       - capdraftsui.zip
       name: capdraftsui
       target-path: resources/
+
 - name: capdraftsui
   type: html5
   path: app/cap.drafts.ui
@@ -76,6 +80,7 @@ modules:
     - npm install
     - npm run build:cf
     supported-platforms: []
+
 resources:
 - name: cap-drafts-db
   type: com.sap.xs.hdi-container
@@ -84,6 +89,7 @@ resources:
     service-plan: hdi-shared
   properties:
     hdi-service-name: ${service-name}
+
 - name: cap-drafts-destination-service
   type: org.cloudfoundry.managed-service
   parameters:
@@ -98,25 +104,27 @@ resources:
             Type: HTTP
             URL: https://ui5.sap.com
           - Authentication: NoAuthentication
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
             Name: cap-drafts-api
             ProxyType: Internet
             Type: HTTP
             URL: ~{srv-api/srv-url}
-            HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
           existing_destinations_policy: update
       version: 1.0.0
     service: destination
     service-name: cap-drafts-destination-service
     service-plan: lite
   requires:
-    - name: srv-api
+  - name: srv-api
+
 - name: cap-drafts_html_repo_host
   type: org.cloudfoundry.managed-service
   parameters:
     service: html5-apps-repo
     service-name: cap-drafts-html5-app-host-service
     service-plan: app-host
+
 - name: uaa_cap-drafts
   type: org.cloudfoundry.managed-service
   parameters:
@@ -124,6 +132,7 @@ resources:
     service: xsuaa
     service-name: cap-drafts-xsuaa-service
     service-plan: application
+
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
@@ -132,4 +141,5 @@ build-parameters:
   - builder: custom
     commands:
     - npm install --production
+    - npm run create-swagger-json
     - npx -p @sap/cds-dk cds build --production

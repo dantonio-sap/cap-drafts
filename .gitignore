@@ -3,3 +3,7 @@
 gen/db/.env
 node_modules
 .DS_Store
+app/cap.drafts.ui/dist/
+resources/
+sqlite.db
+mta_archives/
