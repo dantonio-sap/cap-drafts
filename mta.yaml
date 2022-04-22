@@ -28,30 +28,30 @@ modules:
 - name: cap-drafts-destination-content
   type: com.sap.application.content
   requires:
-  - name: cap-drafts-destination-service
-    parameters:
-      content-target: true
-  - name: cap-drafts_html_repo_host
-    parameters:
-      service-key:
-        name: cap-drafts_html_repo_host-key
-  - name: uaa_cap-drafts
-    parameters:
-      service-key:
-        name: uaa_cap-drafts-key
+    - name: cap-drafts-destination-service
+      parameters:
+        content-target: true
+    - name: cap-drafts_html_repo_host
+      parameters:
+        service-key:
+          name: cap-drafts_html_repo_host-key
+    - name: uaa_cap-drafts
+      parameters:
+        service-key:
+          name: uaa_cap-drafts-key
   parameters:
     content:
       instance:
         destinations:
-        - Name: cap_drafts_cap_drafts_html_repo_host
-          ServiceInstanceName: cap-drafts-html5-app-host-service
-          ServiceKeyName: cap-drafts_html_repo_host-key
-          sap.cloud.service: cap.drafts
-        - Authentication: OAuth2UserTokenExchange
-          Name: cap_drafts_uaa_cap_drafts
-          ServiceInstanceName: cap-drafts-xsuaa-service
-          ServiceKeyName: uaa_cap-drafts-key
-          sap.cloud.service: cap.drafts
+          - Name: cap_drafts_cap_drafts_html_repo_host
+            ServiceInstanceName: cap-drafts-html5-app-host-service
+            ServiceKeyName: cap-drafts_html_repo_host-key
+            sap.cloud.service: cap.drafts
+          - Authentication: OAuth2UserTokenExchange
+            Name: cap_drafts_uaa_cap_drafts
+            ServiceInstanceName: cap-drafts-xsuaa-service
+            ServiceKeyName: uaa_cap-drafts-key
+            sap.cloud.service: cap.drafts
         existing_destinations_policy: ignore
   build-parameters:
     no-source: true
@@ -60,16 +60,16 @@ modules:
   type: com.sap.application.content
   path: .
   requires:
-  - name: cap-drafts_html_repo_host
-    parameters:
-      content-target: true
+    - name: cap-drafts_html_repo_host
+      parameters:
+        content-target: true
   build-parameters:
     build-result: resources
     requires:
-    - artifacts:
-      - capdraftsui.zip
-      name: capdraftsui
-      target-path: resources/
+      - artifacts:
+          - capdraftsui.zip
+        name: capdraftsui
+        target-path: resources/
 
 - name: capdraftsui
   type: html5
@@ -78,75 +78,74 @@ modules:
     build-result: dist
     builder: custom
     commands:
-    - npm install
-    - npm run build:cf
+      - npm install
+      - npm run build:cf
     supported-platforms: []
 
 resources:
-- name: cap-drafts-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    service: hana
-    service-plan: hdi-shared
-  properties:
-    hdi-service-name: ${service-name}
+  - name: cap-drafts-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
 
-- name: cap-drafts-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          - Authentication: NoAuthentication
-            HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
-            Name: cap-drafts-api
-            ProxyType: Internet
-            Type: HTTP
-            URL: ~{srv-api/srv-url}
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: cap-drafts-destination-service
-    service-plan: lite
-  requires:
-  - name: srv-api
+  - name: cap-drafts-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+              - Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+                Name: cap-drafts-api
+                ProxyType: Internet
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+            existing_destinations_policy: update
+        version: 1.0.0
+      service: destination
+      service-name: cap-drafts-destination-service
+      service-plan: lite
+    requires:
+      - name: srv-api
 
-- name: cap-drafts_html_repo_host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: cap-drafts-html5-app-host-service
-    service-plan: app-host
+  - name: cap-drafts_html_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: cap-drafts-html5-app-host-service
+      service-plan: app-host
 
-- name: uaa_cap-drafts
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: cap-drafts-xsuaa-service
-    service-plan: application
+  - name: uaa_cap-drafts
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: cap-drafts-xsuaa-service
+      service-plan: application
 
-- name: btp-app-logs
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: application-logs
-    service-plan: lite
+  - name: btp-app-logs
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: application-logs
+      service-plan: lite
 
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npm install --production
-    - npm run create-swagger-json
-    - npx -p @sap/cds-dk cds build --production
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production

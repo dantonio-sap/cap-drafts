@@ -1,8 +1,0 @@
-using MY_BOOKSHOP_BOOKS as MY_BOOKSHOP_BOOKS;
-entity MY_BOOKSHOP_BOOKCOSTS {
-  key ID : Integer;
-  BOOK : association to MY_BOOKSHOP_BOOKS on BOOK.ID = BOOK_ID;
-  BOOK_ID : Integer;
-  PURCHASEPRICE : Integer;
-  SALESPRICE : Integer;
-};
