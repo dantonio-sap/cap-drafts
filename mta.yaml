@@ -9,6 +9,7 @@ modules:
   requires:
   - name: cap-drafts-db
   - name: uaa_cap-drafts
+  - name: btp-app-logs
   provides:
   - name: srv-api
     properties:
@@ -132,6 +133,12 @@ resources:
     service: xsuaa
     service-name: cap-drafts-xsuaa-service
     service-plan: application
+
+- name: btp-app-logs
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: application-logs
+    service-plan: lite
 
 parameters:
   deploy_mode: html5-repo
